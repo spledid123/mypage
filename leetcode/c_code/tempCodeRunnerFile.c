@@ -1,1 +1,0 @@
-printf("xx%dxx",old);

@@ -1,5 +1,0 @@
-//文件<->缓冲区<->显示设备
-//按块缓存，按行缓存(\n),不缓存
-//修改缓存模式：memset(buff,'\0',sizeof(buff));buff为自行设置的缓冲区
-//setvbuf(stdout,buff,_IOFBF,1024)//_IOFBF按块；_IOLBF按行;_IONBF不缓存
-//fflush(stdout)强制刷新缓冲区
