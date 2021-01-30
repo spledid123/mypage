@@ -1,0 +1,32 @@
+graphical user interface
+(1)
+'guide':creat GUI environment->untitled.fig
+->untitle.m(code)/untitle(gui)
+左方是元素
+工具+鼠标调整界面
+双击可以看到属性
+tag是标识码string&font...可以改按钮上的字
+(2)untitle.m
+编辑程式：
+所有‘元素’对象都在handles下面，handles.axe1/pushbutton
+函数需要指定对象标识码（比如有两个axies
+get()/set()
+use handles to store variables(用全局变量存储某些变量
+(3)compiling the program
+deploytool:application compile
+->matlab code.exe
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

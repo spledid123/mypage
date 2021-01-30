@@ -1,0 +1,118 @@
+basic plot
+(1)plot
+matlab need points
+plot(x,y),x/y is vectors/mean points
+plot(y):x=[1 2...n]
+(默认hoid off)
+hold on 
+plot()...
+hold off
+//保留
+plot style:
+plot(x,y,format):data markers/line types/colors
+legend()//图标
+legend('sin(x)','cos(x)','a')//按顺序标出图线名称
+title('title');xlabel('')/ylabel/zlabel
+//'\pi'表示π，'x^t'显示图，
+use latex:
+text(x,y,str,'Interpreter','Latex')//x,y是坐标,str是内容
+str = '$$\int x^2$$'
+
+annotation('arrow','X',[0.32,0.5],'Y',[0.6,0.4])//画图形
+//arrow箭头，后面是箭头位置，
+line(x,y)(画直线)
+(2)figure adjustment
+可以直接在图形编辑界面调整
+axis/figure/line object
+//tick：坐标轴数字间隔
+find the handle od an object and then modify its properties
+//handle 句柄，调整属性
+identify handle:1、h = plot(),h is handle
+    2、gca/gcf/allchild/ancestor/delete/findall
+modify property:get()/set()
+get(handle)/set(handle,'name_properties',修改值);
+//xlim();ylim();
+figure:呼唤图像窗口——同时打开两个窗口画2个图
+%be careful when using gcf/gca
+figure()%figure position and size
+subplot(m,n,1);%several plots in one figure
+axis normal/equal/square/aquare tight..%axes set
+grid on/off;box on/off;%grid(格线)box:右上两条线
+(3)save figure into file
+saveas(handle,'<filename>',<formattype>);
+print()//控制大小
+
+advanced 2D plots
+color space
+3D plots
+(1)special plots
+x = logspace(-1,1,100)10^-1~10^1,100个
+semilogx(x,y)/semilogy(x,y)/loglog(x,y)//x轴/y轴/都用对数表示
+[AX,H1,H2] = plotyy()//显示两个y轴
+histogram://直方图
+y = randn(1,1000)//正太分布随机
+hist(y,10);//creat hitgram
+bar chart://条形图
+x=[1 2 3];y = [x;1:5];
+bar(x);/bar3(y)/barh(y);
+pie chart://饼状图
+pie()/pie3();
+polar chart://极坐标
+polar(theta,r);
+stairs and stem chart://阶梯图/茎干图
+stairs(y);stem(y);
+boxplot and error bar://玻色图，误差图
+boxplot();error bar(x,y,e);
+(2)color
+fill(x,y,'r')//填充，text()//写字
+color space:[R G B];
+imagesc();//2D图，z用颜色标识大小colorbar();//呈现颜色表示的数值
+colormap(hot);//改变色系 hot mean a 256*3 matrix
+(3)3D plots
+plot3/surf/surfc/surface/meshc/contour/contourf
+图形界面有一个rotate 3D的按钮
+plot3(x,y,z)：line plots,x/y/z is vector
+use 'meshgrid' :x/y is vactor,[X,Y]=meshgrid(x,y),X/Y is matrix->一个平面
+mesh(X,Y,Z)(网格)/surf(X,Y,Z)(有贴图)
+contour(X,Y,Z)//矩阵的等高线图,clabel/contourf;
+meshc()/surfc()//3D+等高线图
+view()angle of view;
+light()打光；[X,Y,Z] = sphere()//生成球体坐标
+patch()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

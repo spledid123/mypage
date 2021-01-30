@@ -1,0 +1,391 @@
+类/对象
+对象内部有变量(属性)/函数（方法）
+编写类class，决定对象是怎样的
+class Myfirstclass{
+public：
+        std::string color;
+        float gas;
+         
+        void fill(float liter);//方法的声明
+};
+void Myfirstclass::fill(float liter){}//定义函数
+
+class Car{
+	Car();//构造器，申请分配内存
+	~Car();
+}
+Car::Car(void){//默认没有返回值,可以有参数
+	gas = 4.4;
+	color =  "blue"
+}//初始化
+或者Car::Car(void):gas(4.4),color("blue"){}
+构造对象：Car car;/Car car()
+构造对象数组：Car mycar[10];
+每个类至少有一个构造器，编译器会自动构造
+销毁对象：析构器，清洁内存，无返回值，无参数
+~Classname(){};
+
+this 指针
+this->gas,指当前类的指针//避免二义性隐患
+
+继承：class SubClass : public SuperClass{}
+                    子类		基类
+
+访问控制：比如public声明
+public/protected（类/子类）/private（类）
+声明到下一个声明或类的末尾
+继承类：public： 访问级别不改变；
+protected：public->prtected;
+private:只有这个子类可以使用继承的元素
+
+覆盖方法/重载方法
+覆盖：子类函数覆盖基类：再次声明定义；
+重载：子类不能重载
+
+友元关系：
+完全无关的类访问protected成员
+类之间的特殊关系，允许友元类访问protected/private方法属性
+friend class **//在类里面有这句声明
+
+静态属性/方法
+static ：
+c:定义的局部变量可以只局限于一个文件；
+函数内局部变量只初始化一次
+静态函数：只局限于当前源文件；
+c++拓展：静态数据成员，属于整个类而不是某个对象，必须初始化而且必须在类外初始化
+(分配内存)
+class MyClass{static int a};     int MyClass::a = 100;   
+对于 Myclass a,b;a.a == 100;b.a == 100;
+静态成员函数：只能访问静态成员，所有对象共享，没有this指针；
+（无法访问this指针）
+坚持使用ClassName::methodName();调用静态方法
+
+虚方法：
+new,delete
+int *point = =new int;//定义一个int指针，创建内存
+*point = 110;//赋值
+delete point;//程序不会自动释放内存/free
+
+class A{
+public:
+	void a();
+}
+class AA:public A{
+	void a();//覆盖
+}
+但是在main(){
+ 比如定义了一个指针
+	AA aa;
+	A *point = &aa;
+}
+point ->a不会覆盖，因为默认类型为A*
+虚方法：
+virtual void a();//继承的，子类不可能用非虚方法继承
+//在母类里用，解决上述问题
+//基类析构器都应该是虚方法
+//多层次继承最好用虚方法
+
+
+抽象方法
+声明该方法必不可少，但暂时不定义
+virtual void a() = 0;
+在母类中适用
+多态性
+一个接口，多种方法！一个名字，多种函数
+比如抽象方法在不同子类；
+比如重载
+
+运算符重载
+int operator + (int a,int b){
+return (a-b);}
+./.*/::/sizeof/?.不允许重载
+不允许改变运算对象操作数/优先级别/结合性/参数至少有一个是类对象
+不能有默认参数
+
+其中一个参数可以隐含着，用this指针替代
+可以放在类内/外，这就必须两个参数
+但是如果类进行了保护，需要时友元函数friend
+
+重载<< 接受自己定义的对象
+std::ostream& operator<<(std::ostream& os,Class a);//a是一个对象
+os是流，a是数据；return os;
+替代某些类的print函数
+重载函数{os <<a.a}
+int main{
+a class1;a class2;
+std::cout << class1<<class2};
+
+多继承
+class  Subclass : public Superclass1, public  Superclass2;
+
+虚继承
+多继承可能会继承多组属性造成矛盾，因此提出虚继承
+比如class D{};
+class B:public D;
+class A:public D;
+class C:public A,public B;
+C中会有两组D中属性；
+需要虚继承
+class B:virtual public D;class A:virtual public D;
+
+错误与调试
+<climits>/<limits.h>
+
+assert函数
+调试函数<assert.h>/<cassert>
+assret(参数)可以确定真假
+int i = 3;
+assert(i == 5)真：过；假：不过报错
+捕获异常(打开文件/申请内存)
+与预期不结合try/throw/catch
+try{
+//do something
+//throw 若出差错则执行，以下不执行；执行catch
+}
+catch{
+
+}
+抛出异常的函数:比如catchfun
+int catchfun(参数) throw(const char *){//计算结果+处理异常
+	计算，判定异常，比如利用<climits>
+	if(异常) throw "异常"；
+	else return 结果；
+	
+}
+try{
+	int a=catchfun(参数)；//若产生异常直接跳过
+	std::cout<<a;
+}
+catch(const char *e){//catch的参数可以是不同的类型
+	std::cout<<e;
+}
+构造器/析构器不适用异常
+
+动态内存管理
+静态内存；
+动态内存，从内存池分配内存，new语句；
+delete释放内存，关联指针=NULL;
+int *point = new int;
+delete i;
+i =  NULL;
+
+动态数组：
+int point =10;
+std::cin>>point;
+int *x = new int[point]；
+//可以访问存储x[];
+delete [] x;
+x =  NULL;
+
+从函数或方法返回内存
+int *fun(){}
+int *x = fun();
+std :: cout << *x;
+delete x;
+x = NULL;
+
+交换：*x ^= *y;*y^=*x;*x^=^y;
+#if 0 #endif宏指令
+
+复制对象
+Myclass中有元素int *ptr;
+Myclass one;
+Myclass two;
+two = one;
+**但这是直接用one的指针成员，
+one.ptr == two.ptr;
+在one删除后，two.ptr指向的无意义；
+需要构建副本
+解决：重载 Myclass &operator = (const Myclass &rhs)
+{if(this != &rhs//取地址){delete ptr;ptr = new int;
+*ptr= *rhs.ptr;}
+else{
+//不处理，说明等号两边是同一个对象
+}
+return *this;}
+
+也可以Myclass two = one;
+会生成副本构造器，需要定义；
+Myclass(const Myclass &rhs){
+	*this = rhs；//经过重载了的等号
+}
+即：在类中定义好副本构造器与重载符号
+
+&表示引用，即该函数不再定义一个形参，而是直接对实参进行操作；
+但此时该变量拥有两个名字，其他变量不可以用这两个名字；
+两个名字都可以操作该变量
+用const可以提高安全性
+比如int a;
+const int &ra = a;
+ra = 1;//失败；a = 1;//成功 
+另外，引用可以作为返回值，但是该引用不得超过作用域
+int & fun(int i){
+	int a;
+	return a;//超出作用域，错误
+	return i；//返回对i的引用
+}
+int main(){
+int i = 2;
+fun(i) = 3;//相当于int & ra =i;ra =3;
+//i==3;
+}
+
+double vals[] = {10.1, 12.6, 33.1, 24.1, 50.0};
+ double& setValues( int i )
+{
+  return vals[i];   // 返回第 i 个元素的引用
+}
+setValues(1) = 20.23;
+
+强制类型转换
+结构相同的类之间可以强制类型转换
+dynamic_cast<MyClass*>(value)对象指针的强制类型转换
+如果value不是MyClass类型或子类，返回NULL
+
+避免内存泄漏
+分配内存后释放；
+delete~~
+
+模块化编程
+头文件，#include能够包含头文件
+iostream/string/stdlib.h；
+系统头文件<>/自定义头文件""
+头文件是.h文件
+"./fish.h""bin/fish.h""../bin/fishh.h"同文件夹/上级文件夹/同级文件夹
+win喜欢用\\
+
+c预处理器
+#if 1/0
+#endif
+
+#ifndef FISH_H//若定义不存在，执行代码
+#define FISH_H
+#endif//指令结束
+//可以用来模块化编程，防止头文件被声明多次
+//写在头文件中
+///这样.cpp/.c文件中就可以尽情include头文件了
+
+#else //若#if为假，执行
+#elif ///else if
+#ifdef 若定义存在，执行代码
+
+命名空间namespace
+namespace Mynamespace{
+	//
+}
+//定义使用都可以这么用
+//使用时可以Mynamespace::变量
+//避免函数命名太麻烦，允许重名
+//当然可以用using namespace ...;  但没有意义
+//可以用using std::cout赋予cout全局性
+
+链接和作用域
+全局变量/局部变量
+在一个源文件里定义的变量在另一个源文件使用需要链接
+存储类：auto/static（静态存储/不被其他文件使用）/
+extern（外部文件变量）  register（寄存器变量）
+函数内部变量不会被函数外使用
+
+
+函数模板
+泛型编程，创建函数和类的模板
+可以是空白的，处理数据也不局限于特定类型
+编译时会对代码进行处理
+占位符比如T，到时替换
+STL库，包含许多有用的数据类型与算法
+
+template <class T>
+void fun(T param){
+	//do something
+}
+//class 并不是类；
+template <class T>
+void swap(T &a,T &b)//交换函数{
+	T tem = a;
+	a =b;
+	b = tem;
+}
+swap(a, b)/swap<int>(a, b);
+class Myclass{
+	Myclass();
+	~Myclass();
+}
+Myclass<T>::Myclass(){  };//构造器
+
+内联函数
+类似于宏替换
+inline修饰；但需要编译器的优化处理
+内联模板：
+与函数模板差不都多
+或者说函数要写在类里
+
+容器与算法
+容纳多个值的数据结构：容器，比如数组
+STL库
+比如vector；
+std::vector<>name;
+.size()长度；
+.push_back();
+name[];
+迭代器：遍历复杂数据结构
+每种容器都要提供自己的迭代器
+std::vector<>::iterator name = names.begin();//初始化
+name为迭代器，智能指针；
+while(iter != names.end()){
+	//遍历
+	name++;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

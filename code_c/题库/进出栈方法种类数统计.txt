@@ -1,0 +1,17 @@
+//一共要进栈i个元素，但是可以任意时间出来，问最后全部进去过，且出来的情况数：符合栈的进出规定 
+//递归实现 
+#include<stdio.h>
+
+int num(int n, int i){//n代表还未进栈数，i代表剩余栈数，n>0,任可进栈，i>0，就可出栈，返回总的情况数 
+	if(n==0&&i>0)return num(n,i-1);
+	if(n>0&&i==0)return num(n-1,i+1);
+	if(n==0&&i==0)return 1;
+	if(n>0&&i>0)
+	return 	num(n,i-1)+num(n-1,i+1);
+} 
+int main(){
+	int i;
+	scanf("%d",&i);
+	printf("%d",num(i,0));
+} 
+

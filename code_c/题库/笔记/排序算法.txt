@@ -1,0 +1,360 @@
+//1、排序算法->根据排序码进行排序 
+//2、算法可以分为内排序与外排序，前者数据都在内存；后者需要外存；下面的算法只有归并算法可用于外排序；
+//3、评价算法需要从最坏（恰好逆序）/平均的情况考虑空间与时间；最主要考虑的操作为比较与移动（赋值） 
+//4、算法也分为稳定与不稳定的，即排序码相同的不同元素再排序后是否前后顺序不变，不变为稳定
+//这一般取决于是否有跨距离的交换 
+
+/*下面算法分类：1、插入排序：直接插入/二分法插入/shell排序；
+2、选择排序： 直接选择/堆排序
+3、交换排序：起泡排序/快速排序
+4、分配排序：基数排序
+5、归并排序：二路归并 */ 
+//若排序的元素不是数组而是由排序码的结构体，只要把所有的“比较 ”改为排序码的比较即可 
+
+#include<stdio.h>
+#include<stdlib.h>
+
+///////////////1、插入排序///////////////////////
+void change1(int *a,int n){//直接插入，排好前面的数，再将下一个插入适当位置，再下一个，循环 
+    int i=0;
+    int temp; 
+    for(i=1;i<n;i++){//从前向后取数 
+    	temp=a[i];
+    	int j=i-1;
+    	while(temp<a[j]&&j>-1){//比较，找到位置 
+    		a[j+1]=a[j];
+    		j--;
+    	}
+    	if(j!=i-1) a[j+1]=temp;//temp>a[i-1],不用插到前面 
+    }
+}
+//插入a[i]时,最多比较i次，最少比较1次，平均(i+1)/2，最多移动i+2次，最少1次；平均（i+3）/2 
+//时间：最好情况Σ2=O(n);最坏Σi+i+2=O(n^2);平均 Σ(i+2)=O(n^2) ；空间：只用了temp，O(1) 
+//由于后者在碰到排序码相等的元素会插入到后一位，所以-稳定
+
+
+void change2(int *a,int n){//二分法插入排序：在前者插入的基础上（排序好），寻找插入对象时用二分法 
+	int i;
+	int temp;
+	for(i=1;i<n;i++){
+		temp=a[i];
+		int head;//头 
+		int rear;//尾 
+		head=0;
+		rear=i-1;
+	    if(temp>=a[i-1]) continue;//若temp本身最大，不必插入 
+	    while (head<rear){//二分，查找，若前面序列存在则rear=第一次出现位置 
+	    	int mid=(head+rear)/2;
+	    	if(a[mid]<temp) head=mid+1;
+	    	else rear=mid;
+	    }
+//	    while (head<=rear){//二分，查找，若前面序列存在则head=应该插入的位置->所有相同序列之后 
+//	    	int mid=(head+rear)/2;
+//	    	if(a[mid]<temp) head=mid+1;
+//	    	else rear=mid-1;
+//	    }//这种要用head作为位置 
+	    int m=0;
+	    m=i-1;
+	    for(;m>=rear;m--){//插入，首先后移空出位置 
+	    	a[m+1]=a[m];
+	    }
+	    a[rear]=temp;
+	}
+}
+//a[i,2^j<=i<2^j+1,比较次数为j;第二种：2^j<i<=2^j+1,比较j+1次，总比较次数为Σ[log2i]=0+1+2+2+...+k=nlog2n-n+1≈nlog2n,故比较：O(nlog2n)
+//移动：最坏O(n^2),最好O(n)，平均O(n^2)
+//时间：T(n)=O(n^2);辅助空间：（temp）O(1) 
+//前一种一直是倒序，不稳定；后一种稳定 
+ 
+void change3(int*a,int n){//shell排序,缩小增量法，现根据增量分组，如delta=4;则分为a[0]a[4]a[8];a[1]a[5]a[9];a[2]a[6];a[3]a[7],组内进行插入排序，
+//再减小delta（delta/2），直到delta==1 
+    int delta=n/2;//增量 
+	int i;
+	for(;delta>0;delta=delta/2){//每次减小delta,"/2" 
+		for(i=delta;i<n;i++){//i指首项最小分组（如上述048）的第二项；再i++则可以遍历所有组除第二项以外的数：(比如456789) 而且是每组的下一个数（每组的直接插入） 
+			int temp=a[i];//插入算法，用temp临时储存新加入的元素 
+			int j=i-delta;//这组上一个元素 
+			while(j>=0&&a[j]>temp){//增量为delta的直接插入 
+				a[j+delta]=a[j];
+				j=j-delta;
+			} 
+			if(j!=i-delta) a[j+delta]=temp;
+		}
+	}	
+}
+//平均移动次数与比较都为O(n^1.3)->T(n)=O(n^1.3)
+//辅助空间（temp）：O(1)
+//不稳定
+//也可以取delta=[delta-1]/3;
+//与直接插入的区别：当n较小时，直接插入费时较小，n^2与n差不多，所以分组减小n；后期delta减小，n增大，但是文件比较有序，因此耗时也较直接排序少 
+
+
+
+///////////////2、选择排序///////////////////////
+void change4(int*a,int n){//直接选择，在所有中选择最小与a[0]交换(成为a[0])；剩下的最小与a[1]交换,循环 
+	int i=0,j;
+	int temp,min;
+	for(i=0;i<n-1;i++){
+		min=i;//记录最小值的下标 
+		temp=a[i];//暂时储存原本的a[i] 
+		for(j=i;j<n;j++){//寻找最小值 
+			if(a[min]>a[j]) min=j;
+		}
+		if(min!=i){//交换 
+		a[i]=a[min];
+		a[min]=temp;
+	    }
+	}
+} 
+//时间： 比较：Σ（n-i）=O(n^2); 移动：一次最少0，最多3（n-1）  T(n)=O(n^2);
+//空间：S(n)=O(1) 
+//不稳定（例：假如a[0]不是最小而有重复） 
+
+
+void change5_creat(int *a,int i,int n){//对a[i]~a[n-1]进行梳理（筛选法：对a[i],与a[2i+1]与a[2i+2]比较，选择其中最大值与a[i]交换，成为a[i],这样逐层梳理）
+//使其符合堆的定义,且基于一个假设：在i以下的子节点全部已经梳理好了，只是因为a[i]的加入才需要重新梳理与其交换的分支 
+    int max=0;
+    int temp=a[i];
+	max=2*i+1;//这句话不放在循环内，是因为如果n==1;还会进行while循环，max==1==n,起不到防止越界访问的作用，后果是a[0]与a[1]互换或越界访问 
+	while(max<n){//防止越界访问  
+    	if(max<n-1&&a[max]<a[max+1]){//子节点最大 
+		    max++; 
+		}
+		if(temp<a[max]){//比较筛选 ,因为只要经过交换，那么可能不符合的新“父节点”的值一定为temp 
+			a[i]=a[max];//给父节点赋值 
+		}//不给子节点赋值再比较的原因是后面给最早父节点赋的值不方便存 
+		else{
+			break;
+		}
+		i=max;max=2*i+1;//只有在if情况下才可以进行 
+    }
+    a[i]=temp;	//给最后的子节点赋值 
+} 
+ 
+void change5(int *a,int n){//堆排序，利用前面已有的选择结果->利用二叉树  
+/*堆：n个排序码{k1,k2...kn}满足1、ki<=k2i+1且ki<=k2i+2(小根堆) 或者2、ki>=k2i+1且ki>=k2i+2 （大根堆）（i<n/2-1） */
+//将各元素按二叉树画出来，可以发现a[i]随i的增大而占据第一、二...层，即：同一层的数字相邻；根即第一层的元素
+//显然，构建一个堆可以找出最值，接下来只要取出最值，再次构建新堆即可 ，直到只剩最后一个元素
+     int i=0;
+     for(i=n/2-1;i>=0;i--){//给前n-i个元素建新堆建新堆 ，未梳理好 
+     	change5_creat(a,i,n); //从n/2+1开始梳理->2*([n/2]-1)+2=(n为偶数）=n>n+1(该元素只有一个分叉)；(n为奇数)n-1->[n/2]-1是最后的非纯分支 
+    } 
+    for(i=n-1;i>0;i--){//新堆建好，进行排序，把最大值(a[0])移到最后，再从新的a[0]开始梳理，根据change5_creat的定义，符合其它节点梳理好了的特点 
+    	int temp=a[0];//此处i指最后的元素,也指重新梳理的元素个数 
+    	a[0]=a[i];
+    	a[i]=temp;
+    	change5_creat(a,0,i);
+    }    
+} 
+//比较：建初始堆O(n);重建O(nlog2n),移动次数<比较 ->时间复杂性：O(nlog2n)
+// 空间O(1)
+//不稳定
+//适用于n较大的情况 
+
+
+
+///////////////////3、交换排序//////////////////////// 
+void change6(int*a,int n){//起泡排序 
+	int i,j;
+	int flag=0,temp=0;
+	for(i=0;i<n-1;i++){//n-1次起泡 
+	    flag=0;
+		for(j=0;j<n-i-1;j++){
+			if(a[j]>a[j+1]){
+				temp=a[j];
+				a[j]=a[j+1];
+				a[j+1]=temp;
+				flag=1;
+			}
+		}
+		if(flag==0){
+		    break; 
+		} 
+	}
+}
+//时间：正序：n-1次排序，无交换，O(n); 逆序：O(n^2);平均O(n^2)
+//空间：O(1)
+//稳定
+
+
+void change7_exchange(int *a,int start,int n){//表示快排，将a[start]在a[start]~a[n-1]排序 
+	int temp=a[start];
+	int i=start,j=n-1;
+	if(n-1<=i) return;//只有一个数或没有，无需排序 
+	while(i<j){
+		while(a[j]>=temp&&j>i){
+			j--;
+		} 
+		if(i<j) {a[i]=a[j];
+		i++;//i表示从右边移来的数，没必要比较
+		} 
+		while(a[i]<=temp&&j>i){
+			i++;
+		} 
+		if(i<j) {a[j]=a[i];
+		j--;//同上 
+		} 
+	}
+	a[i]=temp;
+	change7_exchange(a,start,i);//左区间 
+	change7_exchange(a,i+1,n);//右区间 
+} 
+void change7(int*a,int n){//快速排序/分区交换排序；比如a[0],会分别记录下小于与大于a[0]的数，直到找到最终位置再直接交换
+//一趟快排：（对一个数如a[0]进行排序）将大于a[0]的移到右边，小于a[0]移到左边
+//设定一个i=0,j=n-1;并用temp存放a[0],原来的位置作为空位 
+//i表示空位，j向左，直到遇到比a[0]小的数，与a[i]交换；j作为空位，i向右，直到遇到比a[0]大的数，与a[i]交换；(等大的数不会改变位置)
+//循环，直到i==j,此时a[i]/a[j]为空位，a[i]=temp即可
+//对每个数都进行快排即可，因为已经分好了左右区间，只在区间内进行排序就可，左右区间都要进行（递归）
+      change7_exchange(a,0,n);//进行排序的函数   
+} 
+//时间:最坏O(n^2)(已经排序)；最好O(nlog2n)(每次区间大致相等) ；平均：O(nlog2n)
+//递归需要栈空间,O(log2n)
+//不稳定
+
+
+
+
+////////////////4、分配排序//////////////////////////////////
+typedef struct Num* keynum;
+struct  Num{
+	int key[2];//2表示排序码个数
+	int num;//记录数字 
+	keynum next; 
+};
+struct Queue{//队列 
+	keynum p;//表示尾 
+	keynum f;//表示头 
+};  
+typedef struct Queue queue;
+
+keynum change8_listcreat(int*a,int n){//将a[10]的三个关键码提取出来，建立一个链表 
+	keynum head,now;
+	int i=0,j,key[2];
+	int num;
+	head=now=(keynum)malloc(sizeof(struct Num));
+	if(head==NULL) return NULL;
+	for(;i<n;i++){
+		key[0]=a[i]/10;//十位 
+		key[1]=a[i]%10; //个位
+		for(j=0;j<2;j++){
+			now->key[j]=key[j];
+		}
+		now->num=a[i];
+		if(i<n-1){
+			now->next=(keynum)malloc(sizeof(struct Num));
+		    now=now->next;
+		}
+	    else now->next=NULL;
+	} 
+	return head;
+}
+void change8(int *a,int n){//基数排序(多关键码排序，多关键码的排序码与方式相同才可循环,低位优先)，此处用两个关键码为替代，十位与个位，十位优先于个位
+//需要用到队列，且需要知道关键码个数以及全部的关键码 
+//先按顺序遍历，按个位（低位优先）进队（已经创建好各位0~9的队列），再依次（0~9）出队，得到新序列，
+//再按十位进队（0~9），再出队，得到的即所需
+//用队列的好处就是在分配的时候不改变同队的元素相对位置，所以后一个关键码排序会保留前一个的成果
+//基数指的就是全部关键码的总数 ，需要已知 
+//由于不方便对负数进行比较，不比了 
+//先定义一个链表，将a[10]转化进去，记录十位与个位 
+     keynum head=change8_listcreat(a,n);//链表的头结点 
+     keynum p; 
+     int i,j,k;
+	 queue queue_integer[10];//记录十位与个位的关键码队列（0~9） 
+	 for(i=1;i>=0;i--){//i表示 关键码个数 ,低位优先 
+	 	p=head;//p可以改变，遍历链表 
+	 	for(j=0;j<10;j++){//清空队列，防止上一次比较造成麻烦,定义了10个队列 
+	 		queue_integer[j].f=NULL;
+	 		queue_integer[j].p=NULL;
+	 	}
+	 	while(p!=NULL){
+	 		k=p->key[i];//k为i位关键码
+			 if(queue_integer[k].f==NULL)queue_integer[k].f=p;
+			 else (queue_integer[k].p)->next=p;//接在队尾 
+			 queue_integer[k].p=p;//队尾 
+			 p=p->next;//遍历链表 
+	 	} 
+	 	j=0;//收集 
+	    while(queue_integer[j].p==NULL) j++;//j表示第一个非空列表 
+	    p=queue_integer[j].p;//临时使用用来创建链表（收集） 
+	    head=queue_integer[j].f;//新链表的头 
+	    for(j=j+1;j<10;j++){
+	    	if(queue_integer[j].f!=NULL){
+	    		p->next=queue_integer[j].f;
+				p=queue_integer[j].p;
+	    	}
+	    }
+	    p->next=NULL;
+	 }
+	 p=head;
+	 for(i=0;i<n;i++){
+	 	a[i]=p->num;
+	 	p=p->next;
+	 }	
+} 
+//记排序码种数为r,基数为d
+//时间：清队 O(d),分配队列O(n)，一趟排序O(n+d),共r趟排序， ->O(r*(n+d))
+//空间：next与queue_integer S(n)=O(n+d)
+//稳定
+//适于n较大，r较小的情况 
+
+
+//////////////5、归并排序////////////////////////
+//先将文件划分为小文件，排序，再合并)
+//合并时按照n/2来划分->二路归并
+void change9_merge(int*a,int*b,int low,int m,int high){//排序两个小文件即a[low~m]与a[m+1~high]
+     int i=low,j=m+1,k=low;
+     while(i<=m&&j<=high){//用和，防止越界访问 
+     	if(a[i]<a[j]) {
+     		b[k]=a[i];
+     		i++;k++; 
+     	}
+     	else{
+     		b[k]=a[j];
+			 j++;k++; 
+     	}
+     }
+     while(i<=m)  b[k++]=a[i++];//用&&可能会使两个小文件其中一个未访问完 
+	 while(j<=high)  b[k++]=a[j++];
+}
+
+void change9_mergepass(int*a,int*b,int n,int delta){//一趟归并 ,值得注意的是，在不断的归并中，可能出现最后一个组合元素个数小于delta
+    int i=0,j;//i记录归并工作的进程 
+	while(i+2*delta-1<n){//每次循环合并两个小文件 
+	 	change9_merge(a,b,i,i+delta-1,i+2*delta-1);//表示两个小文件的归并,注意有三个重要参量，表示相邻两个文件的范围 
+		i=i+2*delta; 
+	} 
+	if(i+delta-1<n-1){//剩下不止一个小文件：2个 
+		change9_merge(a,b,i,i+delta-1,n-1); 
+	}
+	else{//剩下一个小文件，可能不完整，直接复制到b，未经排序，但是最终一步肯定剩下两个文件，自然会去排序 
+	    for(j=i;j<n;j++){//j表示b的下标 
+	    	b[j]=a[j];
+	    } 
+	} 	
+}
+
+void change9(int*a,int n){//二路归并，文件有n个记录，划分为n个小文件，再两两归并，排序，得到n/2个文件，循环 
+// 由于 小文件排序后的顺序需要储存，所以令开辟一个数组空间，与a轮流互为归并后储存场所，
+//另外，如果a不单单是一个数组，比如是链表，新开辟的数组也可只记下标
+    int b[n];//新开辟数组
+	int delta=1;//一个小文件包含记录个数
+	while(delta<n){
+		change9_mergepass(a,b,n,delta);//表示一趟归并，即将a中元素按delta的小文件分别排序，再存入b
+		delta=delta*2;
+		change9_mergepass(b,a,n,delta);//即使此时delta大于n，也要将b复制到a,这可以解释为什么参数需要n 
+		delta=delta*2; 
+	} 
+} 
+//时间：归并O(nlog2n)
+//空间：b[],O(n)
+//稳定 
+
+ 
+int main(){
+	int head[10]={23,21,21,4,0,5,1,34,86,86};//以元素本身作为排序码 
+	change9(head,10);//排序,假设从小到大 
+	for(int i=0;i<10;i++){
+		printf("%d ",head[i]);
+	}
+} 
+ 

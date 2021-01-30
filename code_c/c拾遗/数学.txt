@@ -1,0 +1,31 @@
+<stdlib.h>
+void *bsearch(key,base, nitems, size, compar)二分查找
+void qsort(base, nitems,size, compar)排序；
+//int comp(const void *a, const void *b) { return *(int *)a - *(int *)b; }//小于0，a在前，comp自己定义
+//int a[10];qsort(a,10,4,comp);
+//int *s; s=(int *)bsearch(key,a,10,4,comp); 
+	
+int abs(int x)//绝对值
+long int labs(long int x)//绝对值//长整数：xxxl
+
+int rand(void)//返回0~RAND_MAX的随机数（32767）
+void srand(unsigned int seed)//以seed产生伪随机数
+
+div_t div(int numer, int denom)；//分子分母
+div_t div(long int numer, long int denom)
+//struct div_t{int quot;//商int rem;//余数}
+
+<math.h>
+double acos(double x)//asin/atan/cos/cosh/sin/sinh/tanh/tan
+//exp/log(自然对数)/log10/sqrt/ceil(返回大于或等于 x 的最小的整数值。)
+//fabs(绝对值)/floor(小于等于x的最大整数)
+double atan2(double y, double x)y/x的反正切
+double c=double frexp(double x, int *exponent)//把浮点数 x 分解成尾数和指数。返回值是尾数，并将指数存入 //exponent 中,x=c*2^exponent;
+double modf(double x, double *integer)//interger为整数部分，返回小数
+double pow(double x, double y)//x^y
+
+
+
+
+
+

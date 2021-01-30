@@ -1,0 +1,38 @@
+symbolic approach/numeric root solves/recursive function
+(符号法/数根求解/递归函数)
+f(x)=0:analytical solution/graphical lllustation/numerical solution
+(解析解/图形解法/数字解法)
+(1)analytical solution/symbolic approach字符运算
+sym/syms
+syms x;/x = sym('x');%定义一个x的字符，一个symbolic variable x=x
+x+x+x->3*x
+y=x*3
+solve(y,x)/solve(y)/solve(x*3==0)%y=0的解
+此时diff(y,n),求导n次导
+定义多个sym还可以求方程组
+syms a b x
+solve(a*x^2-b,x);%自动将x当作自变量,加了x后将x作自变量
+inv（求逆矩阵）/等函数也可以使用
+(2)sybolic differentiation/integration
+syms x
+y = x^4;
+z = diff(y,x);%算微分
+z = int(y,[0.1]);%算积分，C=0
+z = z-subs(z,x,0)%初值条件y(0)=0,subs替换z中的x为0
+(3)numerical solution
+f = @(x) 1.2*x+x*sin(x);
+fsolve(f,0)%0是对f(x)=0结果的猜测
+注意fsolve(@fun,x0),fun只能有一个输入参数(用数组)
+fzero(@fun,0.1);0.1为猜测值，找到根，但是只能用于过x轴的函数，x^2不行，用的是二分法吧，只能找到一个解
+fsolve/fzero的选项options
+options=optimset('TolFun',1e-3);//误差等属性 
+(4)find roots of polynomial
+roots([1 2 3])->x^2+2x+3=0的解
+(5)numerical finding roots
+1\bisection method二分包夹法
+f(ai)f(bi)<0,[a1,b1]->[a2,b2]->...直到精度够
+2\newton-rephson method牛顿迭代法
+xn+1=xn-f(xn)/f'(xn)
+*fast/可能不收敛/要算微分
+(6)recursive function 递归
+

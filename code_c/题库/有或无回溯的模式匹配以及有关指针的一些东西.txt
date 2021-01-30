@@ -1,0 +1,108 @@
+//模式匹配，若是字串返回位置（第一次出现），若不是返回-1 
+//有/无回溯的模式匹配法 
+//时间复杂性：有回溯：O(m*n)，无回溯：计算next[i]为O(n),循环O(m)->共O(m+n) 
+//关于指针的复习 
+#include<stdio.h>
+#include<string.h> 
+#include<stdlib.h>
+int find(const char *t,const char*p){//朴素模式匹配，回溯， 
+    int i,j=0;
+    int ia,jb;
+    ia=strlen(t);jb=strlen(p);
+	while(i<ia&&j<jb){//循环 
+		if(t[i]==p[j]){
+			i++;j++;
+		} 
+		else{
+			i=i-j+1;//若中间出现一个不匹配，则回溯 
+			j=0;
+		}
+	} 
+	if(j>=jb){//若匹配成功，此时模式的下标必然要超过最大 
+		return i-j;
+	}
+	else{
+		return -1;
+	}
+}
+
+int* getnext(const char *p){
+//1、next[i]==k(k!=-1)的实质是"p[0]p[1]...p[k-1]"=="p[i-k]...p[i-1]"=="t[j-k]...t[j-1]"	(前后缀相等),所以从t[j]与p[k]开始重新比较
+//2、而假如next[i]==0,实质是找不到上述情况，可以推出p[0]!=p[i-1]，但是p[0]!=p[i],所以从t[j]与p[0]比较
+// 3、而假如next[i]==-1,实质是找不到上述情况，可以推出p[0]!=p[i-1]，而且p[0]==p[i]!=t[j],所以从t[j+1]与p[0]比较，显然next(0)==-1 
+//4、已知next[i]=k(k!=-1),假如p[i]==p[k],显然next[i+1]=k+1=next[i]+1;若p[i]!=p[k],重新寻找"p[0]...p[k'-1]"=="p[i+1-k']...p[i]"=="p[k+1-k']...p[k-1],p[i]",
+//p[i]==p[k'-1],next[i+1]=k'=next(k)+1 
+//5、考虑t[j]!=p[i]==p[next[i]]的情况，此时应该使用p[next[next[i]]](如果不在next[]套娃，最终会在find1套娃循环) 
+//因为求next[i]是根据i从小到大求解的,第一层套娃实际在当时已经解套，所以每次解套一次即可//此条规则可以不用 
+//6、考虑k==-1的情况，首先p[0]==-1,next[1]=0;如果不适用规则5，则i>0,必有next[i]>=0；
+//如果使用规则5，可以将其独立起来，即保存k=next[i],使用5时用next[k]；
+     int i=0,k=-1;//k用来保存next[i]的值以便下次使用 
+     int j=strlen(p);
+     int *next;
+     next=(int*)malloc(sizeof(int)*j);
+     next[0]=-1;
+	 while(i<j){
+	 	while(k>=0&&p[i]!=p[k]){//规则4（2） 
+	 		k=next[k]; 
+	 	}
+	 	k++;i++;//规则4两个加一合并
+		if(p[i]==p[k]) next[i]=next[k];
+		else  next[i]=k; 
+	 } 
+	 return next;
+}
+//
+int find1(const char *t,const char *p){
+//1、无回溯模式匹配，KMP算法 ，事实上他是不回溯目标t，也减少了模式p的回溯，但是t、p需要开始比较的位数（next[i]）只取决于模式p 
+/*2、假设模式p为"abacd",然后在p[i]处发现不等。i==3，即有t[j-3]==p[0]==t[j-1]==p[2]=='a';t[j-2]==p[1],t[j]!=p[3],要想不回溯，即从t[j+1]开始比起
+需要向前回溯p，事实上，p[0]!=p[1]->p[0]!=t[j-2];p[0]==p[2]->p[0]==t[j-1],p[0]!=p[3]&&p[1]!=p[3]->p[j]还有希望，所以p需要回溯到p[1],与t[j]比较*/ 
+//3、如果是i==0,则直接跳过t[j]，i不变，直接比较t[j+1]与p[0] 
+//4、设p="ababababcd",若i==7,t[j]按道理与p[next[7]]=p[5]比较即可，但p[7]==p[5]!=t[j](p[next[i]]==p[i]),所以应该更换为p[next[5]]=p[3](p[3]有可能等于t[j])                                  
+/*5、可见，确定p[next],next只与p相关，更准确地说，与p[i]相关，因此可以根据p定义一个next[i]
+由上述，next[i]不仅要规定下一个进行比较的是t[j]还是t[j+1],还要规定下一个p[next],由上，若下一个比较的是t[j+1],记next[i]=-1*/ 
+    int i=0,j=0;
+    int it=strlen(t),jp=strlen(p);
+    int *next;
+    next=getnext(p);
+	while(i<it&&j<jp){
+		if(j==-1||t[i]==p[j]){
+			i++;j++;
+		}
+		else{
+			j=next[j];
+		}
+	}
+	if(j>=jp){
+		return i-j;
+	}
+	else{
+		return -1;
+	}
+}
+int main(){
+   	const char *a="abcdefg";//目标 
+	const char *b="gh";//模式 
+	/*此处修改字符的类型为const char*,而不是const*,否则出现警告
+	   [Warning] deprecated conversion from string constant to 'char*' [-Wwrite-strings] 
+	   “不赞成将一个不可修改的字符串常量“abcdefg”(编译器默认字符串指针是const char*型)的头指针定义为可变的char*”
+	   不修改可以编译，但是会出现警告，而且可能会不小心改变变量*/
+//	char *c="asd";
+//	c[2]="a";修改常量是不可接受的 
+//*c="s"; c="s";后者本身即是将字符串指针赋给c，所以前者不成立（将指针赋给字符串）
+// int *c;
+//*c=0; 显然不行，还没告诉地址在哪，就给地址指向的地方复制，会导致乱存，而0又不代表地址
+//int *c=0 ;这是直接给指针赋值，更不行 
+//  char *c;
+//    char 1、b1[3]={'a','c','\0'};2、b1[2]={'a','c'};3、b1[1]={'\0'};4、b1[1]={'a'};5、b1[4]={'a','a','a','x'};6、char b1[2]={'\0'};b1[1]='a';
+//    c=b1;这是可以的，数组名本身是指针类型，而且可变：char*->char* 
+//printf("%s",b1);// 此处输出的停止是仰仗于'\0'的，见'\0'即停止且'\0'不输出，对未赋值完的数组如a[2]={'a'},该编译器会自动在末尾加上'\0',
+//所以第一输出"ac",第三输出"", 这个输出"a";第6个输出"";
+//对于没有地方存'\0'的数组，该编译器只会对n==2的数组产生bug，如第2个输出"ac？（未知不定字符）"，且若第6个b1[0]赋值比如'c'，也将输出"ca?" 
+//而第4、5正常输出"a"/"aaax" 
+//整数/浮点数数组并不能%s地输出，也不存在'\0',因此不存在这个问题 
+	int num=find(a,b); 
+    printf("%d",num);
+    num=find1(a,b);
+    printf("%d",num);
+}
+ 

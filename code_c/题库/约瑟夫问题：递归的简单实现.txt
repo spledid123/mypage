@@ -1,0 +1,20 @@
+//递归，约瑟夫问题,以胜利者着手 
+#include<stdio.h>
+//在踢出人后，重新从0开始编号，并踢出m-1（从1开始出现整除） 
+int get_the_winner(int n,int m){//返回胜利者的编号 
+	if(n==1){
+		return 0;//只剩下一个人时，胜利者编号自然为0； 
+	}
+	int a=get_the_winner(n-1,m);
+	a=(a+m)%n;
+	return a;
+} 
+int main(){
+	int a,b;
+	int i;
+	scanf("%d %d",&a,&b);
+	while(a!=0){
+		printf("%d\n",get_the_winner(a,b)+1);
+		scanf("%d %d",&a,&b);
+	}	
+}

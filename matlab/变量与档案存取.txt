@@ -1,0 +1,74 @@
+variables：string/structure/cell
+data access
+(1)data types:
+logical/char/numeric/cell/struct/function handle(@)
+variable type conversion:double()
+(2)character/char:string = char array,''包围,can be converd as uint(ASCⅡ)
+str='aaa','a'==str->每个字符都比较
+str(str=='a')='z':将'a'替换为'z'
+index：s1(end:-1:1)倒转或者s1(size(s1,2):-1:1)/length(s1)
+(3)structure
+student.name = '';
+%已经宣告
+index:student(2).name%name is field
+fun:
+rmfield(student,'id')%del one of the field
+firldname(student)%disp all the field names
+
+
+nesting structures%嵌套结构
+a structure is another's field
+A = struct('data',[1 2 3],'nest',struct());
+%define a structure,'date' is name of field,then the content
+(4)cell array
+similar to matrix but each entry contains diffrent type of data
+declared using{}:A(1,1)={[1 2 3 4]};A(1,2)={'as'};
+or:A{1,1}=[1 2 3 4];A{1,2}='as';
+index:A(1,1)mean a cell or the point;A{1,1}mean content
+fun:
+cell2struct/cell2mat(cell->num)/mat2cell/num2cell/struct2cell
+cell/celldisp/cellfun/cellplot/cellstr/iscell 
+mat2cell(a,row,column)
+(5)multidimensional array
+raw/column/layer
+array concatenation:cat(1,a,b)//在第几维接起来
+reshape(a,new_row,new_column)
+//the sum of entry remain unchanged
+(6)checking variable
+isinteger/islogical/isnan/isnum...
+(7)file access
+file<->workspace
+save()/load()%saved as matlab file
+save mydata1.mat (-ascii)%can/can't be read by txt
+load('file.mat')/load('file.mat','-ascii')%不加括号不用引号
+excel:
+xlsread file.xlsx  or    xlread file.xlsx B2:D4
+M = mean(Score);%score is matrix
+xlswrite file.xlsx M 1 E2:E4;
+xlswrite file.xlsx {'Mean'} 1 E1;
+[score header]=xlsread('file.xlsx'),score is num matrix;header is cell
+file I/O fun:
+fopen/fclose/fscanf/fprintf/feof
+fid = fopen('filename','r/w/a');
+fprintf(fid,'格式化format',x);
+status = fclose(fid);
+type filename;
+while ~feof(fid)
+a = fscanf(fid,'format',1);
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

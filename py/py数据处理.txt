@@ -1,0 +1,196 @@
+numpy：
+维度：数据组织形式；
+一维：列表/数组，列表数据类型可以不同，列表[]有序/集合{}无序
+二维/多维，多维列表
+高维数据，字典/dict={"":"","":"",}键值对；一些数据表示格式
+numpy的N维数组对象--ndarray：广播功能函数；整合C/C++..代码;线代数学相关功能
+import numpy as np
+a = np.array([1,2])a**2=5
+ndarray:数据/元数据（维度/类型）；
+要求数据类型相同，下标开始于0；非同质可以用，但不好，类型为对象
+a=np.array()生成数组；轴：维度；秩：轴的数量
+.ndim:秩；.shape:尺寸（行列）；.size:元素个数；
+.dtype:元素类型；.itemsize:每个元素大小/字节
+ndarray元素类型bool/intc(intc32/int64)
+intp(用于索引的整数，ssize_t);
+int8/16/32/64多少位长度的整数;[-128,127][-32768,32767]
+[-2^31,2^31-1][-2^63,2^63-1]
+uint8/16/32/64多少位无符号整数[0,2^16-1]
+float16/32/64,半精度浮点数，1位符号位，5/8/11整数
+
+创建ndarray数组：列表[]/元组()类型创建；
+函数；文件读取；字节流
+1、x=np.array(list/tuple,[dtype=np.int8])
+2、函数：np.arange(n),返回ndarray类型，0~n-1；
+np.ones(shape)生成全1数组，shape=(m,n)
+np.zeros(shape)生成全0数组；
+np.full(shape,val)全val数组
+np.eye(n)n*n方阵E，
+np.ones_like(a)根据数组a形状形成全1数组；
+np.zeros_like(a)  np.full_like(a,val)
+np.linspace(start,end,num,endpoint=True/False(end是否包含于数组))
+根据起止数据等间距填充数据；
+np.concatenate((a,b,...))合并，形成新数组
+
+
+数组变换：
+维度变换：.reshape(shape)不改变元素,不改原数组
+resize(shape)功能同，改原数组
+swapaxes(ax1,ax2)调换其中2个维度
+flatten()降维，返回一维数组，原数组不变
+改变类型
+new_a=a.astype(new_type)创建新数组
+a.tolist()返回一个列表
+
+数组操作
+索引/切片：一维：a=np.array()索引a[2];(可以负数
+切片a[1:4:2]起/终(不含)/步长
+多维：索引a[1,2];切片a[ : : , : , 2]
+
+计算：a.mean()所有元素平均值
+np.abs(x)/fabs(x)绝对值；np.sqrt(x)
+np.square(x)各元素平方，np.log(x)/log10(x)/log2(x)自然/10/2对数
+np.ceil(x)/floor(x)向上/下取整
+np.rint(x)四舍五入，np.modf(x)返回小数/整数
+np.cos/cosh(x)
+np.exp(x)np.sign(x)1(+)0(0)-1(-)...
++-*/**；np.fmax/fmin(x,y)各元素最大/小
+np.mod(x,y)模运算/取余
+np.copysign(x,y)y符号->x
+><...
+
+文件
+CSV文件：批量存取数据
+创建文件np.savetxt(frame(文件名),array(数组),format(元素格式),
+fmt(写入文件格式),delimiter(分隔符，默认空格))
+读取文件np.loadtxt(frame,dtype=np.float,delimitaer=None,uppack=False)
+unpack是否将读入写入不同变量
+tofile(frame,sep='',format=%s");创建文件；
+np.fromfile(frame,dtype=float,count=-1,sep='')读取文件，读入元素个数，-1表所有
+np.save(frame,array)->.npy文件，array是数组；存储/savez压缩版
+np.load(frame)读取/.npy文件
+
+
+随机数
+np.random库
+np.random.rand(d0,d1...)根据d0~dn创建随记数数组，浮点数[0,1)，均匀分布
+...randn(d0...dn)根据d0~dn创建随记数数组，正态分布
+(d0...dn)是shape
+...ranint(low,[,high,shape])根据shape创建随机整数/整数数组，范围[low,high)
+...seed(s)随机数种子
+shuffle(a)根据a的第一轴进行随机排列，改变a
+permutation(a)根据a的第一轴产生一个新的乱序数组，不改变a
+choice(a[,size,replace,p])从中一维数组a以概率p抽取元素，形成size形状新数组，
+replace表示是否可以重用元素，默认Flase
+uniform(low,high,size)产生均匀分布的数组，[iow,high)
+normal(loc,scale,size)正态分布数组，loc均值，scale标准差，size形状
+poisson(lam,size)泊松分布数组，lam随机事件发生率，
+
+
+统计函数
+sum(a,axis=None)axis整数/元组，表示求和的轴，默认全部
+mean(a,axis=None)求期望
+average(a,axis=None,weights=None)加权平均
+std(a,axis)标准差
+var(a,axis)方差
+axis表示第几维，如(1,2,3),axis=1,便表示数组当作有2个元素
+min(a)max(a)
+argmin(a)argmax(a)一维下标
+unravel_index(index,shape)根据一维下标index与shape计算多维下标
+ptp(a)极差median(a)中位数
+
+梯度函数
+np.gradient(t)计算梯度
+
+图像与变换
+from PIL import Image
+im=np.array(Image.open("图像文件"))
+b=[255,255,255]-im,
+//im=np.array(Image.open().convert("L"))//转化为灰度值
+//b = 255 - im//b = (100/255) * a + 150(区间变换// b = 255  * (a/255) ** 2 像素平方
+im = Image.fromarray(b.astype('uint8'))
+im.save('地址')
+
+
+
+
+
+
+
+matplotlib库
+matplotlib.pyplot命令子库/plt
+plt.subplot(nrows,ncols,plt_number)分割x,y轴分割区域，最后一个参数是当前绘图区在第几个区域
+plt.plot([],[])参数1/2个列表
+plt.plot(x,y,format_string,**kwargs)format_string表示格式控制符
+后者表示更多(x,y,format_string)
+y可以省略
+控制符：颜色字符：'b'blue'g'green'r'red'c'。。。。'k'black'w'白色‘0.8'灰度值‘’RGB颜色
+风格字符：-实线，--破折线，-.点划线,:虚线，' '无线
+标记字符（标记数据）：. 点标记; , 像素；o实心圈，v,^,><1234sp*hH+xDd|
+.......
+plt.ylabel('')坐标轴名称
+plt.axis(x0,x1,y0,y1)坐标轴范围
+plt.title()
+plt.text()在任意位置增加文本 Latex格式
+plt.annotate()加带箭头的注释文本
+plt.grid(True)带网格
+
+plt的中文显示
+1、rcParams（改变全局）
+import matPlotlib
+matplotlib.reParams['font.family']='SimHei'
+中文字体：Kaiti/LiSu,FangSong,You Yuan/ STSong
+修改字体  'font.style':normal/italic(斜体)
+'font.size' 字体大小 整数字号/'large'/'x-small'
+2、中文输出处
+增加fontproperties属性
+plt.xlabel('横轴',fontpropeties='SimHei',fontsize=20)
+
+
+子绘图区域
+plt.subplot2grid((3,3),(1,0),colspan=1,rowspan=1),
+（基本分割，当前，延伸）左上为（0，0）
+import matplotlib.gridspec as gridspec
+ gs=gridspec.Gridspec(3,3)
+ax1=plt.subplt(gs[0,:])#子区域ax1
+
+基础图标函数
+plot坐标系；boxplot()箱型图；bar()条形图；
+barh横向条形图；polar极坐标;pie饼图
+psd功率密度图；specgram谱图
+cohere x-y相关性函数；scatter(x,y)散点图
+step步阶图；hist  直方图
+contour()等值图；vlines()垂直图
+stem柴火图；plt_date 数据日期
+
+plt.pie(sizes,explode= ,labels=,autopct='',shadow=,startangle=90)
+plt.axis('equal')//圆形
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

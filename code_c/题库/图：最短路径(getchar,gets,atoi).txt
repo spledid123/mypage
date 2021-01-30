@@ -1,0 +1,167 @@
+/*
+2:兔子与樱花
+描述
+很久很久之前，森林里住着一群兔子。有一天，兔子们希望去赏樱花，但当他们到了上野公园门口却忘记了带地图。
+现在兔子们想求助于你来帮他们找到公园里的最短路。
+
+输入
+输入分为三个部分。
+第一个部分有P+1行（P<30），第一行为一个整数P，之后的P行表示上野公园的地点。
+第二个部分有Q+1行（Q<50），第一行为一个整数Q，之后的Q行每行分别为两个字符串与一个整数，表示这两点有直线的道路，
+并显示二者之间的矩离（单位为米）。
+第三个部分有R+1行（R<20），第一行为一个整数R，之后的R行每行为两个字符串，表示需要求的路线。
+输出
+输出有R行，分别表示每个路线最短的走法。其中两个点之间，用->(矩离)->相隔。
+样例输入
+6
+Ginza
+Sensouji
+Shinjukugyoen
+Uenokouen
+Yoyogikouen
+Meijishinguu
+6
+Ginza Sensouji 80
+Shinjukugyoen Sensouji 40
+Ginza Uenokouen 35
+Uenokouen Shinjukugyoen 85
+Sensouji Meijishinguu 60
+Meijishinguu Yoyogikouen 35
+2
+Uenokouen Yoyogikouen
+Meijishinguu Meijishinguu
+样例输出
+Uenokouen->(35)->Ginza->(80)->Sensouji->(60)->Meijishinguu->(35)->Yoyogikouen
+Meijishinguu
+*/
+
+//gets会输入回车，需要用getchar()将其消失，当然get在输入字符串时遇到回车会停止，空格不会 
+//char->int:atoi 
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+
+typedef struct {
+	int i;
+	char name[100];
+}Node; 
+struct pic{
+	Node *node;
+	int a[35][35];
+	int n;
+};
+void input(struct pic*pic){
+	int a;//图的结点数 
+	scanf("%d",&a);getchar();
+//创建并初始化 
+	pic->node=(Node*)malloc(sizeof(Node)*a);
+	pic->n=a;
+	int i,j,k;
+	for(i=0;i<35;i++){
+		for(j=0;j<35;j++){
+			pic->a[i][j]=100000;
+		}
+	}
+	for(i=0;i<a;i++){//输入节点 
+		char s[100];
+    	gets(s);
+    	pic->node[i].i=i;
+    	strcpy(pic->node[i].name,s);
+    }
+	int b;//边数
+	scanf("%d",&b);getchar();
+	for(i=0;i<b;i++){//输入边 
+		char s1[100];
+		char s2[100];
+		char s3[100];
+		int n;
+		char s4[100];
+		gets(s3);
+		sscanf(s3,"%s %s %s",s1,s2,s4);
+		n=atoi(s4);
+		for(j=0;j<pic->n;j++){
+			if(strcmp(s1,pic->node[j].name)==0){
+				break;
+			}
+		}
+        for(k=0;k<pic->n;k++){
+			if(strcmp(s2,pic->node[k].name)==0){
+				break;
+			}
+		}
+		pic->a[j][k]=pic->a[k][j]=n;		
+	}
+	
+}
+
+typedef struct {
+	int len;
+	int befo;//若不存在记为-1 
+}Path;
+void  dij(int sta,int end,struct pic*pic,Path*path){//起终点反过来 
+	if(sta==end){
+		printf("%s\n",pic->node[sta].name);
+		return ;
+	}
+	int node[pic->n];//记录是否在U 
+	int i;
+	for(i=0;i<pic->n;i++)node[i]=0;
+	node[sta]=1;//记录进入U 
+    for(i=0;i<pic->n;i++){//初始化 
+    	path[i].len=pic->a[sta][i];
+    	if(path[i].len<100000)path[i].befo=sta;
+    	else path[i].befo=-1;
+    }
+	for(i=0;i<pic->n-1;i++){
+		int min=100000,minj;
+		for(int j=0;j<pic->n;j++){//找最小 
+		    if(node[j]==1)continue;
+			if(min>path[j].len){
+				min=path[j].len;minj=j;
+			}
+		}
+		if(min==100000)continue;
+		node[minj]=1;//标记加入U
+		for(int j=0;j<pic->n;j++){//调整 
+			if(node[j]==1)continue;
+			if(path[j].len>min+pic->a[minj][j]){
+				path[j].len=min+pic->a[minj][j];
+				path[j].befo=minj;
+			}
+		} 
+	}
+	i=end;
+	printf("%s",pic->node[end].name);
+	while(i!=sta){
+		printf("->(%d)->%s",pic->a[i][path[i].befo],pic->node[path[i].befo].name);
+		i=path[i].befo;
+	}
+	printf("\n");
+}
+int main(){
+	struct pic *pic=(struct pic*)malloc(sizeof(struct pic));
+	input(pic);	
+	int c;
+	scanf("%d",&c);getchar();
+	int i,j;
+	for(i=0;i<c;i++){
+		char a[100];
+		char a2[100];
+		char a1[100];
+		gets(a);
+		sscanf(a,"%s %s",a1,a2);
+		int j,k;
+		for(j=0;j<pic->n;j++){
+			if(strcmp(a1,pic->node[j].name)==0){
+				break;
+			}
+		}
+        for(k=0;k<pic->n;k++){
+			if(strcmp(a2,pic->node[k].name)==0){
+				break;
+			}
+		}
+		Path path[pic->n];
+		dij(k,j,pic,path);		
+	}
+}

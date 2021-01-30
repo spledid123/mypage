@@ -1,0 +1,101 @@
+1、conmmand line in command window
+(1)as a computer
+operators：+-*/^；
+result is conputed,and displayed as 'ans'
+precedence(顺序) rules;
+help sth.,get help in the command window
+or search in the box
+(2)embedding（嵌入） functions and variables
+functions can be embedded in other functions as a 
+variable such as 'ans';
+variable don't need to be declared before 
+assignment(分配/赋值);
+variables can't begin with a number;
+'who':your variables;
+'whos variable':information of the variable like class
+key word:ans/i,j(complex num)/Inf(∞)/eps(无穷小)/
+	NaN:not a num;/pi(π)/cos(built-in fun)...
+(actually these words can be variable now
+but do not do this)
+'clear':clear all the variables in the workspace
+'clear sth.':clear the variables
+'iskeyword':list all the keyword;
+(cant't be a variable actually)
+'iskeyword sth.':tell is the word the keyword;
+(3)format(格式)
+'format style'change format
+style:short(4位)/long(15)/shortE(E:科学计数)/longE/
+bank（两位小数/money）/hex（十六进制）/rat(分数)
+(4)command line terminal
+';'in the conmmand window:don't display output
+'clc':clear command indow display;
+'clear'/'who'/'whos'
+double-click the variable in the workspace:diaply
+(5)Array(vector and matrix)
+row verctor:a=[1 2 3 4]
+column vector:a=[1;2;3;4];';':line feed(换行)
+a*b/b*a;
+a=[1 2;3 4]
+semicolon mean ';';
+array indexing(索引):
+vector:a(3);
+matrix:a(1,2)/a([2 3],[4 5])(切片，前面是行后面是列)
+/a(6)（从上至下一列列地数）/a([1 3 5])/
+a([1 3;1 2]):一列列数数/一行行数数
+也就是说，有逗号表示坐标，只有一个元素（array/num）表示数数
+默认数数方式，比如3*3*3矩阵，越向后优先级越高（首先3*1*1）
+a(1,2)=3:replace elements;
+a([1 2];[3])=3/[1;3]:number mean all the elements 
+be replaced as the same num;
+colon operator(创立等差数列):
+A=[1:1:100]/[1:100]:creat a vector(可以不要中括号,仅限单行)
+A=[1:5;2:3:15]
+A='a':2:'z'
+[:]表示全部；
+A(3,:)=[]:delete Row 3
+array concatenation(链接):
+F=[A B]/[A;B],A and B concatenation
+array manipulation(操纵)：
++-*：A+B/A+2(所有元素+2)
+.*；./；.\；.^：点乘点除点逆除点乘方（对应元素相乘除）
+（B.\A=A./B
+（A2*2->A.*a=A.*[a a;a a]
+/:A/B:A*B-1;A/a=A./a
+A^a:A^2=A*A;
+':A'=AT(转置)
+some special matrix:
+eye(n):n*n indentity matrix(单位矩阵)
+zeros(m,n)/ones(m,n)/diag([2 3 4])(diagonal matrix对角矩阵)
+rand(m,n)随机矩阵
+linspace(0,13,6):a 1*6 vector,0/13是开头结尾，等差
+some matrix related functions:
+max(A)(the max num each column,只降最前一维)/
+max(max(A))/min(A)
+sum(A)(也是只降最前一维)/mean(A)(每一列的平均，同)
+sort(A)(从小到大，每一列，只降一维)
+sortrows(A)(根据第一列排，每行不分离)
+size(A)=[3 3]，size(A,1)第1维的size
+length(A)：length of vector or the max dimensions of matrix
+find(A==5)/find(A<5)元素位置（数数），列向量
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
