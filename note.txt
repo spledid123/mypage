@@ -1,0 +1,20 @@
+1、基本框架：
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+    </head>
+<body>
+    <h1></h1>//h1~h6都是标题
+    <p></p>//段落
+</body>
+</html>
+2、元素
+<strong>通过加粗表强调，加粗为<b>
+<em>，通过斜体表强调，斜体为<i>
+<p>,段落，将打的东西直接呈现，包括空格
+<pre>,原文本
+<hr>分割线
+
+
+

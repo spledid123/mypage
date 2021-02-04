@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <em>重点<strong>强调</strong></em><br>
+    <i>重点<b>强调</b></i>
+    <p>
+        'the name'
+    </p>
+    the name
+    可以看看没有p是怎么渲染的，空格与回车
+    <footer>脚注:有更好的为啥用p呢
+        <address><a href='note.txt'>note.txt</a></address>
+    </footer>
+    <p>
+        他不认 空格啊，打几个 都认成一个，所以用&nbsp;&nbsp;啊
+        <br>或者用&ensp;&ensp;；
+        <br>这两个是半角；全角是&emsp;&emsp;啊
+        <br> 小于一个字符的空格用&thinsp;啊。
+    </p>
+    如何打出尖括号且不被误会
+    <p>&lt;&#60;p&gt;转义字符&+...,得去百度 </p>
+    <pre>可以打出     原文本< p>,包括<>和多空格
+以及回车</pre>
+    <hr>这是一条分割线
+    <p>周孙鹏说:<q>hello world!</q><br>或者,周孙鹏说:
+    <blockquote>hello world!</blockquote>这是引用</p>
+</body>
+
+</html>
